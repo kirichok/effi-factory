@@ -49,3 +49,21 @@ export function removeTask(tasks, id) {
   }
   return tasks.filter((task) => task.id !== id);
 }
+
+/**
+ * @param {Task[]} tasks
+ * @param {'all' | 'active' | 'completed'} status
+ * @returns {Task[]}
+ */
+export function filterTasks(tasks, status) {
+  if (status === 'all') {
+    return [...tasks];
+  }
+  if (status === 'active') {
+    return tasks.filter((task) => !task.done);
+  }
+  if (status === 'completed') {
+    return tasks.filter((task) => task.done);
+  }
+  throw new Error('Unknown filter status');
+}
