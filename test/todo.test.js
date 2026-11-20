@@ -49,4 +49,19 @@ describe('todo list', () => {
       { id: 2, title: 'Walk', done: false },
     ]);
   });
+
+  it('returns empty arrays when no tasks match the filter', () => {
+    const allActive = addTask(addTask(createList(), 'Buy milk'), 'Walk');
+    assert.deepEqual(filterTasks(allActive, 'completed'), []);
+    assert.deepEqual(filterTasks(createList(), 'active'), []);
+    assert.deepEqual(filterTasks(createList(), 'completed'), []);
+
+    const allDone = toggleTask(toggleTask(allActive, 1), 2);
+    assert.deepEqual(filterTasks(allDone, 'active'), []);
+  });
+
+  it('rejects an invalid filter status', () => {
+    const tasks = addTask(createList(), 'Buy milk');
+    assert.throws(() => filterTasks(tasks, 'all'), /Invalid filter status/);
+  });
 });
