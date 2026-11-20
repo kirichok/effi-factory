@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { addTask, createList, removeTask, toggleTask } from '../src/todo.js';
+import { addTask, createList, filterTasks, removeTask, toggleTask } from '../src/todo.js';
 
 describe('todo list', () => {
   it('starts empty', () => {
@@ -36,5 +36,17 @@ describe('todo list', () => {
     const tasks = addTask(createList(), 'Buy milk');
     assert.throws(() => toggleTask(tasks, 9), /Task not found/);
     assert.throws(() => removeTask(tasks, 9), /Task not found/);
+  });
+
+  it('filters active and completed tasks without mutating', () => {
+    const tasks = toggleTask(addTask(addTask(createList(), 'Buy milk'), 'Walk'), 1);
+    const active = filterTasks(tasks, 'active');
+    const completed = filterTasks(tasks, 'completed');
+    assert.deepEqual(active, [{ id: 2, title: 'Walk', done: false }]);
+    assert.deepEqual(completed, [{ id: 1, title: 'Buy milk', done: true }]);
+    assert.deepEqual(tasks, [
+      { id: 1, title: 'Buy milk', done: true },
+      { id: 2, title: 'Walk', done: false },
+    ]);
   });
 });
